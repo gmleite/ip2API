@@ -6,11 +6,7 @@ const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3 } = requi
 
 
 roteador.get('/', async (req, res)=>{
-    const resultados = await dados.listar()
-    res.status(200)
-    res.send(
-        JSON.stringify(resultados)
-    )
+    res.end
 })
 
 roteador.post('/', async (req, res)=>{
