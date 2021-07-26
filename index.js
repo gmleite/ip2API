@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 
 app.use('/api/facialrec', roteador)
 
-app.listen(config.get('api.porta'), () => console.log('API Rodando.'))
+app.listen(8080, () => console.log('API Rodando.'))
 
 
 
