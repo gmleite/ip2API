@@ -11,6 +11,7 @@ roteador.get('/', async (req, res)=>{
 
 roteador.post('/', async (req, res)=>{
     var id = pegarid()
+    console.log(req.body)
     const dadosrecebidos = req.body
     const cpfrecebido = dadosrecebidos["cpf"]
     const dados = JSON.stringify(dadosrecebidos)

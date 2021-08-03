@@ -1,40 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<script>
-    var myform = document.getElementById("Myform");
 
-    myform.addEventListener('submit', function(e){
+<style>
+    .header {
+        padding: 80px;
+        text-align: center;
+        background: #5d5b5b;
+        color: white;
+    }
 
-        e.preventDefault()
-
-        var formdata = new FormData(this)
-        console.log(formdata)
-        fetch('localhost:8080/api/facialrec', {
-            method:'post',
-            body: formdata
-        }).then(function(res){
-            console.log(res)
-        })
-
-    })
-
-</script>
-<style>.header {
-    padding: 80px;
-    text-align: center;
-    background: #5d5b5b;
-    color: white;
-}
-.header h1{
-font-size: 40px;
-}
-
+    .header h1 {
+        font-size: 40px;
+    }
 </style>
 
 <body>
@@ -46,10 +30,47 @@ font-size: 40px;
         <label for="cpf">Cpf</label>
         <input type="text" name="cpf" id="cpf">
         <label for="imagem">imagem</label>
-        <input type="text" name="imagem" id="imagem">
-        <button type="submit">Enviar</button>
+        <textarea type="text" name="imagem" id="imagem"></textarea>
+        <button type="submit" id="btn">Enviar</button>
 
     </form>
-    
+
 </body>
+<script>
+    async function sendData() {
+        const FD = new FormData(form)
+        const cpf = document.getElementById("cpf").value
+        const imagem = document.getElementById("imagem").value
+        var corpo = {
+            cpf: cpf,
+            imagem: imagem
+        }
+
+        console.log('function called')
+        await fetch('http://localhost:8080/api/facialrec', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            method: 'post',
+            body: JSON.stringify(corpo)
+        }).then(function (response) {
+            return response.text()
+        }).then(function (text) {
+            console.log(text)
+        }).catch(function (error) {
+            console.log(error)
+        })
+
+    }
+
+    const form = document.getElementById("Myform")
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        sendData()
+    })
+
+</script>
+
 </html>
