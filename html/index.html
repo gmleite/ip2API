@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    var myform = document.getElementById("Myform");
+
+    myform.addEventListener('submit', function(e){
+
+        e.preventDefault()
+
+        var formdata = new FormData(this)
+        console.log(formdata)
+        fetch('localhost:8080/api/facialrec', {
+            method:'post',
+            body: formdata
+        }).then(function(res){
+            console.log(res)
+        })
+
+    })
+
+</script>
+<style>.header {
+    padding: 80px;
+    text-align: center;
+    background: #5d5b5b;
+    color: white;
+}
+.header h1{
+font-size: 40px;
+}
+
+</style>
+
+<body>
+    <div class="header">
+        <h1>IP2-RecfaceAPI</h1>
+        <p>API de reconhecimento facial</p>
+    </div>
+    <form class="form" id="Myform">
+        <label for="cpf">Cpf</label>
+        <input type="text" name="cpf" id="cpf">
+        <label for="imagem">imagem</label>
+        <input type="text" name="imagem" id="imagem">
+        <button type="submit">Enviar</button>
+
+    </form>
+    
+</body>
+</html>
