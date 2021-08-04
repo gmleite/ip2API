@@ -11,7 +11,6 @@ roteador.get('/', async (req, res) => {
 
 roteador.post('/', async (req, res) => {
     var id = pegardatastring()
-    console.log(req.body)
     const dadosrecebidos = req.body
     const cpfrecebido = dadosrecebidos["cpf"]
     b64toimg(dadosrecebidos, id, req, res)
