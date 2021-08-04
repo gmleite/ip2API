@@ -1,39 +1,30 @@
 const roteador = require('express').Router()
 const dados = require('./datamethod')
 const fs = require('fs')
-const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3 } = require('./datamethod')
+const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring } = require('./datamethod')
 
 
 
-roteador.get('/', async (req, res)=>{
+roteador.get('/', async (req, res) => {
     res.end
 })
 
-roteador.post('/', async (req, res)=>{
-    var id = pegarid()
+roteador.post('/', async (req, res) => {
+    var id = pegardatastring()
     console.log(req.body)
     const dadosrecebidos = req.body
     const cpfrecebido = dadosrecebidos["cpf"]
-    const dados = JSON.stringify(dadosrecebidos)
-    await inserir(dados, id, req, res)
     b64toimg(dadosrecebidos, id, req, res)
     uploads3(id, cpfrecebido)
-    id ++
-    atualizarid(id)
-    })
+    res.status(201)
+})
 
-roteador.delete('/:id', async (req, res)=>{
-    const id = req.params.id
-    clear(id)
-    res.send(200)
-    res.end
-    })
 
-roteador.get('/:id', async (req, res)=>{
+roteador.get('/:id', async (req, res) => {
     const id = req.params.id
     find(id, req, res)
 })
-    
+
 
 
 
