@@ -19,18 +19,58 @@
     .header h1 {
         font-size: 40px;
     }
+
+    form {
+        padding: 100px;
+        text-align: left;
+        margin: auto;
+        display: table;
+    }
+
+    button {
+        width: 90px;
+        height: 40px;
+        position: absolute;
+        left: 608px;
+        top: 450px;
+    }
+    .cpf{
+        position: fixed;
+        left: 552px;
+        top: 310px;
+    }
+
+    .imagem{
+        position: fixed;
+        left: 520px;
+        top: 340px;
+    }
+    textarea{
+        resize: none;
+        width: 147px;
+        height: 90px;
+    }
+    label textarea{
+        vertical-align: middle;
+    }
 </style>
 
 <body>
     <div class="header">
         <h1>IP2-RecfaceAPI</h1>
-        <p>API de reconhecimento facial</p>
     </div>
     <form class="form" id="Myform">
-        <label for="cpf">Cpf</label>
-        <input type="text" name="cpf" id="cpf">
-        <label for="imagem">imagem</label>
-        <textarea type="text" name="imagem" id="imagem"></textarea>
+
+        <div class="cpf">
+            <label for="cpf">cpf
+                <input type="text" name="cpf" id="cpf">
+            </label>
+        </div>
+        <div class="imagem">
+            <label for="imagem">imagem
+                <textarea type="text" name="imagem" id="imagem"></textarea>
+            </label>
+        </div>
         <button type="submit" id="btn">Enviar</button>
 
     </form>
