@@ -14,7 +14,7 @@ app.use(express.urlencoded({limit:'50mb'}))
 app.use(bodyParser.json())
 
 
-app.use('/api/facialrec', roteador)
+app.use('/api', roteador)
 
 app.listen(8080, () => console.log('API Rodando.'))
 

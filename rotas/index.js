@@ -5,11 +5,11 @@ const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardat
 
 
 
-roteador.get('/', async (req, res) => {
+roteador.get('/facialrec', async (req, res) => {
     res.end
 })
 
-roteador.post('/', async (req, res) => {
+roteador.post('/facialrec', async (req, res) => {
     var id = pegardatastring()
     const dadosrecebidos = req.body
     const cpfrecebido = dadosrecebidos["cpf"]
@@ -17,14 +17,6 @@ roteador.post('/', async (req, res) => {
     uploads3(id, cpfrecebido)
     res.status(201)
 })
-
-
-roteador.get('/:id', async (req, res) => {
-    const id = req.params.id
-    find(id, req, res)
-})
-
-
 
 
 module.exports = roteador
