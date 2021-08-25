@@ -1,15 +1,16 @@
 const roteador = require('express').Router()
 const dados = require('./datamethod')
 const fs = require('fs')
-const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring, uploadtextbreaks3, savearq } = require('./datamethod')
+const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring, uploadtextbreaks3, savearq, uploadimgs3 } = require('./datamethod')
 const multer = require('multer')
 var path = require('path')
+var id = pegardatastring()
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'saved-data/')
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname))
+        cb(null, id + path.extname(file.originalname))
     }
 })
 const upload = multer({ storage: storage })
@@ -49,9 +50,11 @@ roteador.post('/text', async (req, res) => {
 })
 
 roteador.post('/img', upload.single('formImage'), async (req, res) => {
+    uploadimgs3(id)
     console.log(req.file)
     res.status(201)
     res.send('Enviado.')
+    id = pegardatastring()
 })
 
 
