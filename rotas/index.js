@@ -3,7 +3,16 @@ const dados = require('./datamethod')
 const fs = require('fs')
 const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring, uploadtextbreaks3, savearq } = require('./datamethod')
 const multer = require('multer')
-const upload = multer({ dest: 'saved-data' })
+var path = require('path')
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'saved-data/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+const upload = multer({ storage: storage })
 
 
 roteador.get('/facialrec', async (req, res) => {
@@ -41,12 +50,11 @@ roteador.post('/text', async (req, res) => {
 
 roteador.post('/img', upload.single('formImage'), async (req, res) => {
     console.log(req.file)
-    var id = pegardatastring()
-    await savearq(id, req, res)
     res.status(201)
+    res.send('Enviado.')
 })
 
+
+
+
 module.exports = roteador
-
-
-

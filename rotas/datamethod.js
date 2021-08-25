@@ -72,15 +72,6 @@ module.exports = {
             else console.log(data)
 
         })
-    },
-    savearq(id, req, res) {
-        var tmp_path = req.file.path
-        var target_path = 'saved-data/' + req.file.originalname
-        var src = fs.createReadStream(tmp_path)
-        var dest = fs.createWriteStream(target_path)
-        src.pipe(dest)
-        src.on('end', () => {res.send('Complete')})
-        src.on('error', (err) => {res.json({ error: err })})
     }
 
 }
