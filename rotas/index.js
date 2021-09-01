@@ -1,7 +1,7 @@
 const roteador = require('express').Router()
 const dados = require('./datamethod')
 const fs = require('fs')
-const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring, uploadtextbreaks3, savearq, uploadimgs3 } = require('./datamethod')
+const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring, uploadtextbreaks3, savearq, uploadimgs3, runtextract, pdftoimg, uploadjsons3, limpararquivos } = require('./datamethod')
 const multer = require('multer')
 var path = require('path')
 var id = pegardatastring()
@@ -49,12 +49,25 @@ roteador.post('/text', async (req, res) => {
     }
 })
 
-roteador.post('/img', upload.single('formImage'), async (req, res) => {
-    uploadimgs3(id)
-    console.log(req.file)
-    res.status(201)
-    res.send('Enviado.')
-    id = pegardatastring()
+roteador.post('/imgpdf', upload.single('formImage'), async (req, res) => {
+    try {
+        console.log(req.file)
+        res.status(201)
+        res.send('PDF Recebido!')
+        await pdftoimg(id)
+        await new Promise(r => setTimeout(r, 3000))
+        uploadimgs3(id)
+        await new Promise(r => setTimeout(r, 4000))
+        await runtextract(id)
+        await new Promise(r => setTimeout(r, 5000))
+        await uploadjsons3(id)
+        await limpararquivos(id)
+        id = pegardatastring()
+    } catch (erro) {
+        console.log(erro)
+        res.send(JSON.stringify(erro))
+    }
+
 })
 
 
