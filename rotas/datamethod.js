@@ -84,27 +84,27 @@ module.exports = {
     runtextract(id) {
         var textract = new AWS.Textract()
         var params = {
-            Document: { 
-              S3Object: {
-                Bucket: 'ip2-api-dev',
-                Name: `${id}.jpeg`
-              }
+            Document: {
+                S3Object: {
+                    Bucket: 'ip2-api-dev',
+                    Name: `${id}.jpeg`
+                }
             },
             FeatureTypes: [
-              "TABLES", "FORMS"
+                "TABLES", "FORMS"
             ]
-            }
-          textract.analyzeDocument(params, function(err, data) {
+        }
+        textract.analyzeDocument(params, function (err, data) {
             if (err) console.log(err, err.stack)
-            else     fs.writeFileSync(`./saved-data/${id}.json`, JSON.stringify(data), (err) => {
+            else fs.writeFileSync(`./saved-data/${id}.json`, JSON.stringify(data), (err) => {
                 if (err) throw err
-                console.log('JSON Criado!')
-            })          
-          });
+            })
+            console.log('JSON Criado!')
+        });
     },
     pdftoimg(id) {
         const options = {
-            density:300,
+            density: 300,
             saveFilename: `${id}`,
             savePath: "saved-data/",
             format: "jpeg",
@@ -121,7 +121,7 @@ module.exports = {
         });
 
     },
-    uploadjsons3(id){
+    uploadjsons3(id) {
         const s3 = new AWS.S3()
         const filecontent = fs.readFileSync(`saved-data/${id}.json`)
         var params = {
@@ -135,17 +135,16 @@ module.exports = {
 
         })
     },
-    limpararquivos(id){
+    limpararquivos(id) {
         fs.unlink(`saved-data/${id}.pdf`, (err) => {
-            if(err) console.log(err)
-            else console.log('PDF Deletado')  
+            if (err) console.log(err)
+            else console.log('PDF Deletado')
         })
         fs.unlink(`saved-data/${id}.1.jpeg`, (err) => {
-            if(err) console.log(err)
-            else console.log('JPEG Deletado')  
+            if (err) console.log(err)
+            else console.log('JPEG Deletado')
         })
     }
-
 }
 
 
