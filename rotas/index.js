@@ -15,11 +15,6 @@ var storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-
-roteador.get('/facialrec', async (req, res) => {
-    res.end
-})
-
 roteador.post('/facialrec', async (req, res) => {
     try {
         var id = pegardatastring()
@@ -52,17 +47,18 @@ roteador.post('/text', async (req, res) => {
 roteador.post('/imgpdf', upload.single('formImage'), async (req, res) => {
     try {
         console.log(req.file)
-        res.status(201)
-        res.send('PDF Recebido!')
+        
         await pdftoimg(id)
-        await new Promise(r => setTimeout(r, 3000))
+        await new Promise(r => setTimeout(r, 4000))
         uploadimgs3(id)
         await new Promise(r => setTimeout(r, 4000))
-        await runtextract(id)
+        /*await runtextract(id)
         await new Promise(r => setTimeout(r, 5000))
-        await uploadjsons3(id)
+        await uploadjsons3(id)*/
         await limpararquivos(id)
         id = pegardatastring()
+        res.status(201)
+        res.send('PDF Recebido!')
     } catch (erro) {
         console.log(erro)
         res.send(JSON.stringify(erro))

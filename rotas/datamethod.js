@@ -49,23 +49,6 @@ module.exports = {
 
         })
     },
-    uploadtextbreaks3(id) {
-        const s3 = new AWS.S3()
-        const filecontent = fs.readFileSync(`./saved-data/${id}.jpeg`)
-
-        var params = {
-            Body: filecontent,
-            ContentEncoding: 'base64',
-            ContentType: 'image/jpeg',
-            Bucket: "ip2-api-dev",
-            Key: `${id}.jpeg`,
-        }
-        s3.putObject(params, function (err, data) {
-            if (err) console.log(err, err.stack)
-            else console.log(data)
-
-        })
-    },
     uploadimgs3(id) {
         const s3 = new AWS.S3()
         const filecontent = fs.readFileSync(`saved-data/${id}.1.jpeg`)
@@ -80,27 +63,6 @@ module.exports = {
 
         })
 
-    },
-    runtextract(id) {
-        var textract = new AWS.Textract()
-        var params = {
-            Document: {
-                S3Object: {
-                    Bucket: 'ip2-api-dev',
-                    Name: `${id}.jpeg`
-                }
-            },
-            FeatureTypes: [
-                "TABLES", "FORMS"
-            ]
-        }
-        textract.analyzeDocument(params, function (err, data) {
-            if (err) console.log(err, err.stack)
-            else fs.writeFileSync(`./saved-data/${id}.json`, JSON.stringify(data), (err) => {
-                if (err) throw err
-            })
-            console.log('JSON Criado!')
-        });
     },
     pdftoimg(id) {
         const options = {
@@ -120,20 +82,6 @@ module.exports = {
             return resolve;
         });
 
-    },
-    uploadjsons3(id) {
-        const s3 = new AWS.S3()
-        const filecontent = fs.readFileSync(`saved-data/${id}.json`)
-        var params = {
-            Body: filecontent,
-            Bucket: "ip2-api-dev",
-            Key: `${id}.json`,
-        }
-        s3.putObject(params, function (err, data) {
-            if (err) console.log(err, err.stack)
-            else console.log(data)
-
-        })
     },
     limpararquivos(id) {
         fs.unlink(`saved-data/${id}.pdf`, (err) => {
