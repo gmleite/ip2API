@@ -1,9 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const config = require('config')
 const roteador = require('./rotas/index')
-const aws = require('aws-sdk')
 const cors = require("cors")
 
 app.use(cors())

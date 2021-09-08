@@ -1,7 +1,6 @@
 const roteador = require('express').Router()
 const dados = require('./datamethod')
-const fs = require('fs')
-const { inserir, b64toimg, clear, find, atualizarid, pegarid, uploads3, pegardatastring, uploadtextbreaks3, savearq, uploadimgs3, runtextract, pdftoimg, uploadjsons3, limpararquivos } = require('./datamethod')
+const { b64toimg, uploads3, pegardatastring, uploadimgs3, pdftoimg, limpararquivos } = require('./datamethod')
 const multer = require('multer')
 var path = require('path')
 var id = pegardatastring()
@@ -33,7 +32,6 @@ roteador.post('/text', async (req, res) => {
 roteador.post('/imgpdf', upload.single('formImage'), async (req, res) => {
     try {
         console.log(req.file)
-        
         await pdftoimg(id)
         await new Promise(r => setTimeout(r, 5000))
         uploadimgs3(id)

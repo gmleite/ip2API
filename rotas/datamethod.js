@@ -1,6 +1,4 @@
 const fs = require('fs')
-const { start } = require('repl')
-const { finished } = require('stream')
 const AWS = require('aws-sdk')
 const path = require('path')
 const { fromPath } = require('pdf2pic')
