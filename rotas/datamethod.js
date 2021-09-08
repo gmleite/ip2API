@@ -1,6 +1,5 @@
 const fs = require('fs')
 const AWS = require('aws-sdk')
-const path = require('path')
 const { fromPath } = require('pdf2pic')
 AWS.config.update({
     accessKeyId: 'AKIA6LVBLYD6GA5QRK3P',

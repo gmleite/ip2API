@@ -1,5 +1,4 @@
 const roteador = require('express').Router()
-const dados = require('./datamethod')
 const { b64toimg, uploads3, pegardatastring, uploadimgs3, pdftoimg, limpararquivos } = require('./datamethod')
 const multer = require('multer')
 var path = require('path')
