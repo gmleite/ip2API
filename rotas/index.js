@@ -13,6 +13,33 @@ var storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
+roteador.get('/', (req, res) => {
+    res.send(`
+    <style>
+    .header {
+        padding: 80px;
+        text-align: center;
+        background: #5d5b5b;
+        color: white;
+    }
+    .center {
+        padding: 4px;
+        text-align: center;
+      }
+    
+    </style>
+    <div class="header">
+        <h1>IP2-TextrAPI</h1>
+    </div>
+    <h2 class="center"> Apenas PDF</h2>
+      <form action="/api/imgpdf" enctype="multipart/form-data" method="post" class="center">
+        <div>Arquivo: <input type="file" name="someExpressFiles" multiple="multiple" /></div class="center">
+        
+        <input type="submit" value="Enviar" class="center"/>
+      </form>
+    `)
+  })
+
 
 roteador.post('/text', async (req, res) => {
     try {
@@ -28,7 +55,7 @@ roteador.post('/text', async (req, res) => {
     }
 })
 
-roteador.post('/imgpdf', upload.single('formImage'), async (req, res) => {
+roteador.post('/imgpdf', upload.single('someExpressFiles'), async (req, res) => {
     try {
         console.log(req.file)
         await pdftoimg(id)
