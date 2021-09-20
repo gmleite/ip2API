@@ -48,7 +48,7 @@ module.exports = {
     },
     uploadimgs3(id) {
         const s3 = new AWS.S3()
-        const filecontent = fs.readFileSync(`saved-data/${id}.1.jpeg`)
+        const filecontent = fs.readFileSync(`./saved-data/${id}.1.jpeg`)
         var params = {
             Body: filecontent,
             Bucket: "ip2-api-dev",
@@ -65,12 +65,12 @@ module.exports = {
         const options = {
             density: 300,
             saveFilename: `${id}`,
-            savePath: "saved-data/",
+            savePath: "./saved-data/",
             format: "jpeg",
             width: 2480,
             height: 3508
         };
-        const storeAsImage = fromPath(`saved-data/${id}.pdf`, options);
+        const storeAsImage = fromPath(`./saved-data/${id}.pdf`, options);
         const pageToConvertAsImage = 1;
 
         storeAsImage(pageToConvertAsImage).then((resolve) => {
@@ -81,11 +81,11 @@ module.exports = {
 
     },
     limpararquivos(id) {
-        fs.unlink(`saved-data/${id}.pdf`, (err) => {
+        fs.unlink(`./saved-data/${id}.pdf`, (err) => {
             if (err) console.log(err)
             else console.log('PDF Deletado')
         })
-        fs.unlink(`saved-data/${id}.1.jpeg`, (err) => {
+        fs.unlink(`./saved-data/${id}.1.jpeg`, (err) => {
             if (err) console.log(err)
             else console.log('JPEG Deletado')
         })
