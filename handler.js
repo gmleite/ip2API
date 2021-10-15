@@ -38,9 +38,9 @@ app.get("/", (req, res, next) => {
 
 app.post('/imgpdf', async (req, res, next) => {
   try {
-    const urlpres = presignedurl(id)
+    uploads3(id, req.body)
     res.status(201)
-    res.send()
+    res.send('Enviado com sucesso')
   } catch (erro) {
     console.log(erro)
     res.send(JSON.stringify(erro))

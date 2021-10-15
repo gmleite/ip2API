@@ -1,6 +1,6 @@
 const fs = require('fs')
 const AWS = require('aws-sdk')
-const { fromPath } = require('pdf2pic')
+const Busboy = require('busboy');
 AWS.config.update({
     accessKeyId: 'AKIA6LVBLYD6GA5QRK3P',
     secretAccessKey: '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',
@@ -25,18 +25,42 @@ module.exports = {
         return `${year}${month}${day}${seconds}`
 
     },
+    uploads3(id, bodyreq) {
+        try {
+            const body = JSON.parse(bodyreq)
 
-    presignedurl(id) {
-        var s3 = new AWS.S3();
+            if (!body || !body.image || !body.mime) {
+                return res.send(400)
+            }
+            if (!allowedMimes.includes(body.mime)) {
+                return res.send(400)
+            }
 
-        var presignedGETURL = s3.getSignedUrl('postObject', {
-            Bucket: 'ip2-api-dev',
-            Key: `${id}.jpeg`, //filename
-            Expires: 100 //time to expire in seconds
-        })
-        return presignedGETURL;
-    }
+            let imageData = body.image
+            var buf = Buffer.from(imageData, 'base64')
+
+            var params = {
+                Body: buf,
+                ContentEncoding: 'base64',
+                ContentType: 'image/jpeg',
+                Bucket: "ip2-api-dev",
+                Key: `${id}.jpeg`,
+
+            }
+            s3.putObject(params, function (err, data) {
+                if (err) console.log(err, err.stack)
+                else console.log(data)
+
+            })
+
+
+        } catch (error) {
+            res.send(error)
+        }
+    },
 }
+
+
 
 
 
