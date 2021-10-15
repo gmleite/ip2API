@@ -77,9 +77,9 @@ app.post('/imgpdf', async (req, res, next) => {
     
     s3.putObject(params, (err, s3res) => {
       if (err) {
-        res.send({ err, status: 'error' });
+        res.send({ err, status: 'erro!' });
       } else {
-        res.send({ data: s3res, status: 'success', msg: 'Image successfully uploaded.' });
+        res.send({ data: s3res, status: 'success', msg: 'Imagem enviada com sucesso!' });
       }
     });
 
