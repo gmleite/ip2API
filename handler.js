@@ -2,12 +2,23 @@ const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
 const { pegardatastring, uploadimgs3, pdftoimg, uploads3, presignedurl } = require('./rotas/datamethod')
-var path = require('path')
 const cors = require("cors")
-const AWS = require('aws-sdk')
+const AWS = require('aws-sdk');
+const Busboy = require('busboy');
+AWS.config.update({
+  accessKeyId: 'AKIA6LVBLYD6GA5QRK3P',
+  secretAccessKey: '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',
+  region: 'us-east-1'
+})
+const { AWS_ACESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env
+
+const s3 = new AWS.S3();
+
+var id = pegardatastring()
+
 
 app.use(cors())
-var id = pegardatastring()
+
 
 
 app.get("/", (req, res, next) => {
@@ -38,24 +49,42 @@ app.get("/", (req, res, next) => {
 });
 
 app.post('/imgpdf', async (req, res, next) => {
-  const bodyreq = req.body
-  var s3 = new AWS.S3();
-  function base64_encode(bodyreq) {
 
-    var bitmap = bodyreq;
-    return new Buffer.from(bitmap).toString('base64');
-  }
-  console.log("Starting File saving!");
-  var buf = base64_encode(bodyreq)
-  var params = { Bucket: 'ip2-api-dev', Key: `${id}.jpeg`, Body: buf, ContentEncoding: 'image/jpeg' };
-
-  s3.putObject(params, function (err, data) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('succesfully uploaded the image!');
-    }
+  let chunks = [], fname, ftype, fEncoding;
+  let busboy = new Busboy({ headers: req.headers });
+  busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+    console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+    fname = filename.replace(/ /g, "_");
+    ftype = mimetype;
+    fEncoding = encoding;
+    file.on('data', function (data) {
+      // you will get chunks here will pull all chunk to an array and later concat it.
+      console.log(chunks.length);
+      chunks.push(data)
+    });
+    file.on('end', function () {
+      console.log('File [' + filename + '] Finished');
+    });
   });
+  busboy.on('finish', function () {
+    const params = {
+      Bucket: 'ip2-api-dev', 
+      Key: `${id}.jpeg`,
+      Body: Buffer.concat(chunks), // concatinating all chunks
+      ContentEncoding: fEncoding, 
+      ContentType: ftype // required
+    }
+    
+    s3.putObject(params, (err, s3res) => {
+      if (err) {
+        res.send({ err, status: 'error' });
+      } else {
+        res.send({ data: s3res, status: 'success', msg: 'Image successfully uploaded.' });
+      }
+    });
+
+  });
+  req.pipe(busboy);
 
 })
 
