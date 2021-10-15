@@ -12,7 +12,8 @@ provider:
       - Effect: Allow
         Action:
                 - s3:*
-        Resource: '*'
+        Resource: 
+                - '*'
 
 functions:
   api:

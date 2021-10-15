@@ -4,6 +4,7 @@ const app = express();
 const { pegardatastring, uploadimgs3, pdftoimg, uploads3, presignedurl } = require('./rotas/datamethod')
 var path = require('path')
 const cors = require("cors")
+const AWS = require('aws-sdk')
 
 app.use(cors())
 var id = pegardatastring()
@@ -37,22 +38,27 @@ app.get("/", (req, res, next) => {
 });
 
 app.post('/imgpdf', async (req, res, next) => {
-  try {
-    uploads3(id, req.body)
-    res.status(201)
-    res.send('Enviado com sucesso')
-  } catch (erro) {
-    console.log(erro)
-    res.send(JSON.stringify(erro))
+  const bodyreq = req.body
+  var s3 = new AWS.S3();
+  function base64_encode(bodyreq) {
+
+    var bitmap = bodyreq;
+    return new Buffer.from(bitmap).toString('base64');
   }
+  console.log("Starting File saving!");
+  var buf = base64_encode(bodyreq)
+  var params = { Bucket: 'ip2-api-dev', Key: `${id}.jpeg`, Body: buf, ContentEncoding: 'image/jpeg' };
+
+  s3.putObject(params, function (err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('succesfully uploaded the image!');
+    }
+  });
 
 })
 
-app.get("/hello", (req, res, next) => {
-  return res.status(200).json({
-    message: "Hello from path!",
-  });
-});
 
 app.use((req, res, next) => {
   return res.status(404).json({
