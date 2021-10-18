@@ -39,7 +39,7 @@ app.get("/", (req, res, next) => {
   <div class="header">
       <h1>IP2-TextrAPI</h1>
   </div>
-  <h2 class="center"> Apenas PDF</h2>
+  <h2 class="center"> Apenas JPEG.</h2>
     <form action="/imgpdf" enctype="multipart/form-data" method="post" class="center">
       <div>Arquivo: <input type="file" name="someExpressFiles" multiple="multiple" /></div class="center">
       
@@ -49,7 +49,7 @@ app.get("/", (req, res, next) => {
 });
 
 app.post('/imgpdf', async (req, res, next) => {
-
+  // nao sei como funciona mas funciona, envia a imagem pro s3
   let chunks = [], fname, ftype, fEncoding;
   let busboy = new Busboy({ headers: req.headers });
   busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
@@ -66,25 +66,36 @@ app.post('/imgpdf', async (req, res, next) => {
       console.log('File [' + filename + '] Finished');
     });
   });
-  busboy.on('finish', function () {
+  busboy.on('finish', async function () {
     const params = {
-      Bucket: 'ip2-api-dev', 
+      Bucket: 'ip2-api-dev',
       Key: `${id}.jpeg`,
       Body: Buffer.concat(chunks), // concatinating all chunks
-      ContentEncoding: fEncoding, 
+      ContentEncoding: fEncoding,
       ContentType: ftype // required
     }
-    
+
+
     s3.putObject(params, (err, s3res) => {
       if (err) {
         res.send({ err, status: 'erro!' });
       } else {
-        res.send({ data: s3res, status: 'success', msg: 'Imagem enviada com sucesso!' });
+        return
       }
     });
+    await new Promise(r => setTimeout(r, 4000))
+    var s3file = s3.getSignedUrl('getObject', {
+      Bucket: 'ip2-api-dev',
+      Key: `${id}.json`,
+      Expires: 100
+    })
 
-  });
+    return res.send(`<a href='${s3file}'>Download Resultado</a>`)
+
+  })
+
   req.pipe(busboy);
+
 
 })
 
