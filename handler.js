@@ -1,7 +1,7 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
-const { pegardatastring, uploadimgs3, pdftoimg, uploads3, presignedurl } = require('./rotas/datamethod')
+const { pegardatastring, uploads3} = require('./rotas/datamethod')
 const cors = require("cors")
 const AWS = require('aws-sdk');
 const Busboy = require('busboy');
@@ -56,6 +56,8 @@ app.post('/imgpdf', async (req, res, next) => {
     console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
     fname = filename.replace(/ /g, "_");
     ftype = mimetype;
+    extension = ftype.replace('image/', '')
+    extension = extension.replace('application/', '')
     fEncoding = encoding;
     file.on('data', function (data) {
       // you will get chunks here will pull all chunk to an array and later concat it.
@@ -67,23 +69,22 @@ app.post('/imgpdf', async (req, res, next) => {
     });
   });
   busboy.on('finish', async function () {
-    const params = {
-      Bucket: 'ip2-api-dev',
-      Key: `${id}.jpeg`,
-      Body: Buffer.concat(chunks), // concatinating all chunks
-      ContentEncoding: fEncoding,
-      ContentType: ftype // required
-    }
-
-
-    s3.putObject(params, (err, s3res) => {
-      if (err) {
-        res.send({ err, status: 'erro!' });
-      } else {
-        return
+      const params = {
+        Bucket: 'ip2-api-dev',
+        Key: `${id}.${extension}`,
+        Body: Buffer.concat(chunks), // concatinating all chunks
+        ContentEncoding: fEncoding,
+        ContentType: ftype // required
       }
-    });
-    await new Promise(r => setTimeout(r, 4000))
+      s3.putObject(params, (err, s3res) => {
+        if (err) {
+          res.send({ err, status: 'erro!' });
+        } else {
+          return
+        }
+      })
+    
+    await new Promise(r => setTimeout(r, 5000))
     var s3file = s3.getSignedUrl('getObject', {
       Bucket: 'ip2-api-dev',
       Key: `${id}.json`,
