@@ -8,13 +8,40 @@ provider:
     name: aws
     runtime: nodejs12.x
     lambdaHashingVersion: '20201221'
+    environment:
+        TIME_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+        FILE_LOCATION_TABLE: "file-location${opt:stage, self:provider.stage}"
     iamRoleStatements:
       - Effect: Allow
         Action:
-                - s3:*
-        Resource: 
-                - 'arn:aws:s3:::ip2-api-dev'
-                - 'arn:aws:s3:::ip2-api-dev/*'
+            - s3:*
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+        Resource: "*"
+
+resources:
+  Resources:
+    TimeDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "data"
+            AttributeType: "S"   
+        KeySchema:
+          -
+            AttributeName: "data"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:provider.environment.TIME_TABLE}
+    
 
 functions:
     api:

@@ -8,16 +8,21 @@
       "name": "aws",
       "runtime": "nodejs12.x",
       "lambdaHashingVersion": "20201221",
+      "environment": {
+        "TIME_TABLE": "ip2-api-dev",
+        "FILE_LOCATION_TABLE": "file-locationdev"
+      },
       "iamRoleStatements": [
         {
           "Effect": "Allow",
           "Action": [
-            "s3:*"
+            "s3:*",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem"
           ],
-          "Resource": [
-            "arn:aws:s3:::ip2-api-dev",
-            "arn:aws:s3:::ip2-api-dev/*"
-          ]
+          "Resource": "*"
         }
       ],
       "stage": "dev",
@@ -189,13 +194,19 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/ip2-api/dev/1634597322305-2021-10-18T22:48:42.305Z/ip2-api.zip"
+                "S3Key": "serverless/ip2-api/dev/1634768396036-2021-10-20T22:19:56.036Z/ip2-api.zip"
               },
               "Handler": "handler.handler",
               "Runtime": "nodejs12.x",
               "FunctionName": "ip2-api-dev-api",
               "MemorySize": 1024,
               "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "TIME_TABLE": "ip2-api-dev",
+                  "FILE_LOCATION_TABLE": "file-locationdev"
+                }
+              },
               "Role": {
                 "Fn::GetAtt": [
                   "IamRoleLambdaExecution",
@@ -207,14 +218,14 @@
               "ApiLogGroup"
             ]
           },
-          "ApiLambdaVersionz67kIJ6w88EOKvAgP6hsqE6AgfotGBRnwAHymDZK9A": {
+          "ApiLambdaVersionY3g2esV6U9WqbrkMCkBtPTD4i0TNJUrIWua0SwO9zQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "/ZucKq4/tLYwzOrF4R+1RdGa/enwEAsffXWMxS2F/Io="
+              "CodeSha256": "ywju3Us7jBjmcrqbK6fWLxnWuAMMLV+qEBe0SJeyKpo="
             }
           },
           "HttpApi": {
@@ -308,6 +319,32 @@
               }
             },
             "DependsOn": "HttpApiIntegrationApi"
+          },
+          "TimeDynamoDbTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "data",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "data",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              },
+              "StreamSpecification": {
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+              },
+              "TableName": "ip2-api-dev"
+            }
           }
         },
         "Outputs": {
@@ -322,7 +359,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionz67kIJ6w88EOKvAgP6hsqE6AgfotGBRnwAHymDZK9A"
+              "Ref": "ApiLambdaVersionY3g2esV6U9WqbrkMCkBtPTD4i0TNJUrIWua0SwO9zQ"
             },
             "Export": {
               "Name": "sls-ip2-api-dev-ApiLambdaFunctionQualifiedArn"
@@ -467,8 +504,39 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionz67kIJ6w88EOKvAgP6hsqE6AgfotGBRnwAHymDZK9A"
+        "versionLogicalId": "ApiLambdaVersionY3g2esV6U9WqbrkMCkBtPTD4i0TNJUrIWua0SwO9zQ"
       }
+    },
+    "resources": {
+      "Resources": {
+        "TimeDynamoDbTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "data",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "data",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            },
+            "StreamSpecification": {
+              "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "TableName": "ip2-api-dev"
+          }
+        }
+      },
+      "Outputs": {}
     },
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yml",
@@ -483,6 +551,9 @@
       "provider": {
         "$ref": "$[\"service\"][\"provider\"]"
       },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
+      },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
       }
@@ -492,7 +563,7 @@
     "artifact": "/Users/giovanni/Desktop/WORK/three JS/main2/.serverless/ip2-api.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/ip2-api/dev/1634597322305-2021-10-18T22:48:42.305Z",
+    "artifactDirectoryName": "serverless/ip2-api/dev/1634768396036-2021-10-20T22:19:56.036Z",
     "artifact": "ip2-api.zip"
   }
 }
