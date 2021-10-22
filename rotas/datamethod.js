@@ -2,11 +2,10 @@ const fs = require('fs')
 const AWS = require('aws-sdk')
 const uuid = require('uuid')
 AWS.config.update({
-    accessKeyId: 'AKIA6LVBLYD6GA5QRK3P',
-    secretAccessKey: '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',
-    region: 'us-east-1'
-})
-const { AWS_ACESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey: process.env.secretAccessKey,
+    region: process.env.region
+  })
 const s3 = new AWS.S3()
 
 
