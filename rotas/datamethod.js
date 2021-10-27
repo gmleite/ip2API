@@ -39,7 +39,30 @@ module.exports = {
     },
     urlFormatado(id, extension) {
         return location = `https://s3.console.aws.amazon.com/s3/object/ip2-api-dev?region=us-east-1&prefix=${id}.${extension}`
-    }
+    },
+    saveToDynamoDB(dataFormatad, urlFormatad){
+        const dynamodb = new AWS.DynamoDB();
+
+        AWS.config.setPromisesDependency(require('bluebird'));
+
+        var paramsdb = {
+            TableName: "ip2-api-dev",
+            Item: {
+              'data': {
+                S: dataFormatad
+              },
+              'localizaçao': {
+                S: urlFormatad
+              }
+            }
+          }
+          dynamodb.putItem(paramsdb, function (err, data) {
+            if (err) console.log(err, err.stack)
+            else console.log(data)
+          })
+    },
+    
+    
 }
 
 

@@ -1,7 +1,7 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
-const { pegardatastring, dataFormatada, urlFormatado, objectTrue } = require('./rotas/datamethod')
+const { pegardatastring, dataFormatada, urlFormatado, saveToDynamoDB } = require('./rotas/datamethod')
 const cors = require("cors")
 const AWS = require('aws-sdk');
 const Busboy = require('busboy');
@@ -20,8 +20,7 @@ app.use(cors())
 
 
 app.get("/", (req, res, next) => {
-  return res.send(`
-  <style>
+  return res.send(`<style>
   .header {
       padding: 80px;
       text-align: center;
@@ -32,55 +31,44 @@ app.get("/", (req, res, next) => {
       padding: 4px;
       text-align: center;
     }
-  
-  </style>
-  <div class="header">
-      <h1>IP2-TextrAPI</h1>
-  </div>
-  <h2 class="center"> Apenas JPEG ou PDF.</h2>
-    <form action="/imgpdf" enctype="multipart/form-data" method="post" class="center">
-      <div>Arquivo: <input type="file" name="someExpressFiles" multiple="multiple" /></div class="center">
-      
-      <input type="submit" value="Enviar" class="center"/>
-    </form>
-  `)
-});
-app.get('/video', (req, res, next) => {
-  return res.send(`
-  <style>
-  .header {
-      padding: 80px;
-      text-align: center;
-      background: #5d5b5b;
-      color: white;
+  .center2 {
+    padding: 8px;
+    text-align: center;
   }
-  .center {
-      padding: 4px;
-      text-align: center;
-    }
   
   </style>
   <div class="header">
       <h1>IP2-TextrAPI</h1>
   </div>
-  <h2 class="center"> Apenas videos.</h2>
-    <form action="/videoupload" enctype="multipart/form-data" method="post" class="center">
+  
+  <h2 class="center"> Escolha o arquivo e o software desejado.</h2>
+    <form action='/imgpdf' enctype="multipart/form-data" method="post" class="center">
       <div>Arquivo: <input type="file" name="someExpressFiles" multiple="multiple" /></div class="center">
-      
       <input type="submit" value="Enviar" class="center"/>
     </form>
-  `)
-})
 
-app.post('/videoupload', (req, res, next) => {
+    <script>
+    opcao = document.getElementById('greet').value
+    
+    </script>
+  `)
+  
+});
+
+app.post('/imgpdf', async (req, res, next) => {
+  // nao sei como funciona mas funciona, envia a imagem pro s3
+  // MELHOR NAO CUTUCAR
+  var opcao = req.opcao
   let chunks = [], fname, ftype, fEncoding;
   let busboy = new Busboy({ headers: req.headers });
   busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+
     console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
     fname = filename.replace(/ /g, "_");
     ftype = mimetype;
     extension = ftype.replace('image/', '')
     extension = extension.replace('application/', '')
+    extension = extension.replace('video/', '')
     fEncoding = encoding;
     file.on('data', function (data) {
       // you will get chunks here will pull all chunk to an array and later concat it.
@@ -94,7 +82,7 @@ app.post('/videoupload', (req, res, next) => {
   busboy.on('finish', async function () {
     const paramss3 = {
       Bucket: 'ip2-api-dev',
-      Key: `${id}.mp4`,
+      Key: `${id}.${extension}`,
       Body: Buffer.concat(chunks), // concatinating all chunks
       ContentEncoding: fEncoding,
       ContentType: ftype // required
@@ -108,25 +96,8 @@ app.post('/videoupload', (req, res, next) => {
     })
     var dataFormatad = dataFormatada()
     var urlFormatad = urlFormatado(id, extension)
-    AWS.config.setPromisesDependency(require('bluebird'));
 
-    const dynamodb = new AWS.DynamoDB();
-
-    var paramsdb = {
-      TableName: "ip2-api-dev",
-      Item: {
-        'data': {
-          S: dataFormatad
-        },
-        'localizaçao': {
-          S: urlFormatad
-        }
-      }
-    }
-    dynamodb.putItem(paramsdb, function (err, data) {
-      if (err) console.log(err, err.stack)
-      else console.log(data)
-    })
+    saveToDynamoDB(dataFormatad, urlFormatad)
 
     await new Promise(r => setTimeout(r, 2000))
 
@@ -137,84 +108,8 @@ app.post('/videoupload', (req, res, next) => {
     })
 
 
-    return res.send('enviado')
-
-  })
-
-  req.pipe(busboy);
-  var id = pegardatastring()
-
-
-})
-app.post('/imgpdf', async (req, res, next) => {
-  // nao sei como funciona mas funciona, envia a imagem pro s3
-  // MELHOR NAO CUTUCAR
-  let chunks = [], fname, ftype, fEncoding;
-  let busboy = new Busboy({ headers: req.headers });
-  busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-    console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
-    fname = filename.replace(/ /g, "_");
-    ftype = mimetype;
-    extension = ftype.replace('image/', '')
-    extension = extension.replace('application/', '')
-    fEncoding = encoding;
-    file.on('data', function (data) {
-      // you will get chunks here will pull all chunk to an array and later concat it.
-      console.log(chunks.length);
-      chunks.push(data)
-    });
-    file.on('end', function () {
-      console.log('File [' + filename + '] Finished');
-    });
-  });
-  busboy.on('finish', async function () {
-    const paramss3 = {
-      Bucket: 'ip2-api-dev',
-      Key: `${ id }.${ extension }`,
-      Body: Buffer.concat(chunks), // concatinating all chunks
-      ContentEncoding: fEncoding,
-      ContentType: ftype // required
-    }
-    s3.putObject(paramss3, (err, s3res) => {
-      if (err) {
-        res.send({ err, status: 'erro!' });
-      } else {
-        return;
-      }
-    })
-    var dataFormatad = dataFormatada()
-    var urlFormatad = urlFormatado(id, extension)
-    AWS.config.setPromisesDependency(require('bluebird'));
-
-    const dynamodb = new AWS.DynamoDB();
-
-    var paramsdb = {
-      TableName: "ip2-api-dev",
-      Item: {
-        'data': {
-          S: dataFormatad
-        },
-        'localizaçao': {
-          S: urlFormatad
-        }
-      }
-    }
-    dynamodb.putItem(paramsdb, function (err, data) {
-      if (err) console.log(err, err.stack)
-      else console.log(data)
-    })
-
-    await new Promise(r => setTimeout(r, 2000))
-
-    var s3file = s3.getSignedUrl('getObject', {
-      Bucket: 'ip2-api-dev',
-      Key: `${ id }.json`,
-      Expires: 100
-    })
-
-
     return res.send(`
-    < !DOCTYPE html >
+    <!DOCTYPE html>
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -276,6 +171,7 @@ app.post('/imgpdf', async (req, res, next) => {
 
         <div style="display:none;" id="myDiv" class="animate-bottom">
           <h2><a href='${s3file}'>Download Resultado</a></h2>
+          <h2></h2>
         </div>
 
         <script>
