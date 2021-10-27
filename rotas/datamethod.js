@@ -5,7 +5,7 @@ AWS.config.update({
     accessKeyId: process.env.accessKeyId,
     secretAccessKey: process.env.secretAccessKey,
     region: process.env.region
-  })
+})
 const s3 = new AWS.S3()
 
 
@@ -37,7 +37,7 @@ module.exports = {
 
         return dataFormatada = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
     },
-    urlFormatado (id, extension){
+    urlFormatado(id, extension) {
         return location = `https://s3.console.aws.amazon.com/s3/object/ip2-api-dev?region=us-east-1&prefix=${id}.${extension}`
     }
 }
