@@ -104,7 +104,7 @@ app.post('/imgpdf', async (req, res, next) => {
     var s3file = s3.getSignedUrl('getObject', {
       Bucket: 'ip2-api-dev',
       Key: `${id}.json`,
-      Expires: 100
+      Expires: 240
     })
 
 
