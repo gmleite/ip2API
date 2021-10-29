@@ -41,7 +41,7 @@ app.get("/", (req, res, next) => {
       <h1>IP2-TextrAPI</h1>
   </div>
   
-  <h2 class="center"> Escolha o arquivo e o software desejado.</h2>
+  <h2 class="center">JPEG ou PDF para Documentos, Apenas MP4 para videos.</h2>
     <form action='/imgpdf' enctype="multipart/form-data" method="post" class="center">
       <div>Arquivo: <input type="file" name="someExpressFiles" multiple="multiple" /></div class="center">
       <input type="submit" value="Enviar" class="center"/>
@@ -56,9 +56,9 @@ app.get("/", (req, res, next) => {
 });
 
 app.post('/imgpdf', async (req, res, next) => {
-  // nao sei como funciona mas funciona, envia a imagem pro s3
+
   // MELHOR NAO CUTUCAR
-  var opcao = req.opcao
+  
   let chunks = [], fname, ftype, fEncoding;
   let busboy = new Busboy({ headers: req.headers });
   busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
@@ -171,7 +171,7 @@ app.post('/imgpdf', async (req, res, next) => {
 
         <div style="display:none;" id="myDiv" class="animate-bottom">
           <h2><a href='${s3file}'>Download Resultado</a></h2>
-          <h2></h2>
+          <h2>Caso o link não funcione, espere 30 segundos e tente novamente.</h2>
         </div>
 
         <script>
