@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "animate.css": "^4.1.1",
     "aws-sdk": "^2.954.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
