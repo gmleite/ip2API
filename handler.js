@@ -5,6 +5,7 @@ const { pegardatastring, dataFormatada, urlFormatado, saveToDynamoDB } = require
 const cors = require("cors")
 const AWS = require('aws-sdk');
 const Busboy = require('busboy');
+const path = require('path');
 require('dotenv').config()
 AWS.config.update({
   accessKeyId: process.env.accessKeyId,
@@ -20,252 +21,16 @@ app.use(cors())
 
 
 app.get("/", (req, res, next) => {
-  return res.send(`<!DOCTYPE HTML>
-  <html>
-  <style>
-    body,
-    html {
-      height: 100%;
-    }
-  
-    body {
-      margin: 0px;
-    }
-  
-    
-    .hero-image {
-     
-      background-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5)), url("https://content.techgig.com/photo/77087595/Guide-How-to-build-career-as-a-programmer-without-college-degree.jpg");
-  
-    
-      height: 100%;
-  
-  
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      position: relative;
-    }
-  
-  
-  
-    .hero-text {
-      text-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-    }
-  
-    .button1 {
-      display: inline-block;
-      padding: 12px 22px;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      outline: none;
-      color: black;
-      background-color: white;
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 6px #999;
-      font-family: "Courier New", "Lucida Console", monospace;
-  
-    }
-  
-    .p1 {
-      font-family: "Courier New", "Lucida Console", monospace;
-    }
-  
-    .p2 {
-      text-align: center;
-      font-family: "Courier New", "Lucida Console", monospace;
-    }
-  
-    h1 {
-      font-weight: normal;
-    }
-  
-    .column2 {
-      float: right;
-      width: 25%;
-      margin-bottom: 16px;
-      padding: 0 52px;
-    }
-  
-    .column {
-      float: left;
-      width: 25%;
-      margin-bottom: 16px;
-      padding: 0 52px;
-    }
-  
-    @media screen and (max-width: 650px) {
-      .column {
-        width: 100%;
-        display: block;
-      }
-    }
-  
-    .card {
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    }
-  
-    .container {
-      padding: 0 18px;
-    }
-  
-    .container::after,
-    .row::after {
-      content: "";
-      clear: both;
-      display: table;
-    }
-  
-    .title {
-      color: grey;
-    }
-  
-    .button {
-      display: inline-block;
-      padding: 12px 22px;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      outline: none;
-      color: black;
-      background-color: white;
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 6px #999;
-      font-family: "Courier New", "Lucida Console", monospace;
-    }
-  
-    .button:hover {
-      background-color: #555;
-    }
-  
-    .animate__animated.animate__fadeInLeft {
-      --animate-duration: 2s;
-      --animate-delay: 0.5s;
-    }
-    .enviar-image {
-      
-      background-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.8)), url("https://www.apollotechnical.com/wp-content/uploads/2020/08/software-engineer-interview-questions.jpg");
-  
-      height: 100%;
-  
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      position: relative;
-    }
-  
-  
-    .enviar-text {
-      text-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-    }
-    .button3 {
-      display: inline-block;
-      padding: 8px 16px;
-      font-size: 12px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      outline: none;
-      color: black;
-      background-color: white;
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 6px #999;
-      font-family: "Courier New", "Lucida Console", monospace;
-    }
-  </style>
-  
-  <head>
-    <title>IP2 AWS Services</title>
-    <link rel="icon" type="image/png" href="/assets/imgs/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="/assets/imgs/favicon-16x16.png" sizes="16x16" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  </head>
-  
-  <body>
-    <div class="hero-image">
-      <div class="hero-text">
-        <h1 class="p1">IP2 AWS Services</h1>
-        <p class="p1">Um site para utilizar serviços da AWS com facilidade e praticidade.</p>
-        <a href="#start" class="button1" onclick=myfunction()>Iniciar</a>
-      </div>
-    </div>
-  
-    <div id="start">
-      <div class="row">
-        <div class="column">
-          <div class="card">
-            <img src="https://pbs.twimg.com/media/D2Iv_UbX0AAbuqR.jpg" alt="textract" style="width:100%">
-            <div class="container">
-              <h2>Textract</h2>
-              <p class="title">Processamento de Documentos</p>
-              <p>Aceita apenas JPEG e PDF's.</p>
-              <p>Retorna um arquivo JSON em até 2min. </p>
-            </div>
-          </div>
-        </div>
-  
-        <div class="column2">
-          <div class="card">
-            <img src="https://miro.medium.com/max/600/1*0W3bY_v4cor_SC-rx0rA3A.png" alt="rekognition" style="width:93%">
-            <div class="container">
-              <h2>Rekognition</h2>
-              <p class="title">Reconhecimento Facial</p>
-              <p>Aceita apenas videos em MP4.</p>
-              <p>Retorna um arquivo JSON em até 5min.</p>
-            </div>
-          </div>
-        </div>
-        <div style="text-align: center;">
-          <h1 class="p2">Serviços Disponiveis</h1>
-          <p class="p2">Textract: Faz a leitura de documentos e retorna todas as informaçoes em arquivo JSON.</p>
-          <p class="p2">Rekognition: Faz a leitura de videos, retorna as informaçoes desejadas em arquivo JSON.</p>
-          <a href="#enviar" class="button">Enviar arquivos</a>
-        </div>
-      </div>
-    </div>
-  
-  
-    <div class="enviar-image" id="enviar">
-      <div class="enviar-text">
-        <h1 class="p1">Enviar arquivos:</h1>
-        <form action='/imgpdf' enctype="multipart/form-data" method="post" class="center">
-          <div class="p2">Arquivo: <input type="file" name="someExpressFiles" multiple="multiple" /></div class="center">
-          <input type="submit" value="Enviar" class="button3"/>
-        </form>
-      </div>
-    </div>
-  
-  
-  </body>
-  <script>
-    function myfunction() {
-      const elementToAnimate = document.getElementsByTagName('div')[2];
-      elementToAnimate.classList.add('animate__animated', 'animate__fadeInLeft');
-    }
-  </script>`)
-  
+  res.sendFile(path.join(__dirname, '/assets/index.html'))
+
 });
+
+app.use(express.static("assets"));
 
 app.post('/imgpdf', async (req, res, next) => {
 
   // MELHOR NAO CUTUCAR
-  
+
   let chunks = [], fname, ftype, fEncoding;
   let busboy = new Busboy({ headers: req.headers });
   busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
@@ -273,10 +38,20 @@ app.post('/imgpdf', async (req, res, next) => {
     console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
     fname = filename.replace(/ /g, "_");
     ftype = mimetype;
+    var tiposaceitos = ["mp4", "jpeg", "pdf"];
     extension = ftype.replace('image/', '')
     extension = extension.replace('application/', '')
     extension = extension.replace('video/', '')
     fEncoding = encoding;
+
+    if (tiposaceitos.indexOf(extension) !== -1) {
+      console.log('Tipo de arquivo aceito!')
+    } else {
+      res.send(JSON.stringify('Tipo de arquivo nao é aceito '))
+      res.end
+    }
+
+
     file.on('data', function (data) {
       // you will get chunks here will pull all chunk to an array and later concat it.
       console.log(chunks.length);

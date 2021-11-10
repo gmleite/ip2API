@@ -194,7 +194,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/ip2-api/dev/1636404538631-2021-11-08T20:48:58.631Z/ip2-api.zip"
+                "S3Key": "serverless/ip2-api/dev/1636572722276-2021-11-10T19:32:02.276Z/ip2-api.zip"
               },
               "Handler": "handler.handler",
               "Runtime": "nodejs12.x",
@@ -218,14 +218,14 @@
               "ApiLogGroup"
             ]
           },
-          "ApiLambdaVersionmieh7qL1lmypTdFQ4p64kKTnxg6gejlePPKWTOgA": {
+          "ApiLambdaVersione4zPdjVbXRtvPL31PQZsyybNY0oCpJWZgnRmOyjVWs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "g0qxb2SaXCEPlCrHr7qcFEdZCqhwRoj33CshuhLqjlA="
+              "CodeSha256": "pAGJsTXIYZoV1ZZI1K+dqS8aCKu4yIAztENZwJD+P0A="
             }
           },
           "HttpApi": {
@@ -359,7 +359,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionmieh7qL1lmypTdFQ4p64kKTnxg6gejlePPKWTOgA"
+              "Ref": "ApiLambdaVersione4zPdjVbXRtvPL31PQZsyybNY0oCpJWZgnRmOyjVWs"
             },
             "Export": {
               "Name": "sls-ip2-api-dev-ApiLambdaFunctionQualifiedArn"
@@ -504,7 +504,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionmieh7qL1lmypTdFQ4p64kKTnxg6gejlePPKWTOgA"
+        "versionLogicalId": "ApiLambdaVersione4zPdjVbXRtvPL31PQZsyybNY0oCpJWZgnRmOyjVWs"
       }
     },
     "resources": {
@@ -563,7 +563,7 @@
     "artifact": "/Users/giovanni/Desktop/WORK/three JS/main2/.serverless/ip2-api.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/ip2-api/dev/1636404538631-2021-11-08T20:48:58.631Z",
+    "artifactDirectoryName": "serverless/ip2-api/dev/1636572722276-2021-11-10T19:32:02.276Z",
     "artifact": "ip2-api.zip"
   }
 }

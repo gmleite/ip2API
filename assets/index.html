@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+  <html>
+  <head>
+    <title>IP2 AWS Services</title>
+    <link rel="icon" type="image/png" href="./assets/imgs/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./assets/imgs/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" href="main.css"/>
+  </head>
+  
+  <body>
+    <div class="hero-image">
+      <div class="hero-text">
+        <h1 class="p1">IP2 AWS Services</h1>
+        <p class="p1">Um site para utilizar serviços da AWS com facilidade e praticidade.</p>
+        <a href="#start" class="button1" onclick=myfunction()>Iniciar</a>
+      </div>
+    </div>
+  
+    <div id="start">
+      <div class="row">
+        <div class="column">
+          <div class="card">
+            <img src="https://pbs.twimg.com/media/D2Iv_UbX0AAbuqR.jpg" alt="textract" style="width:100%">
+            <div class="container">
+              <h2>Textract</h2>
+              <p class="title">Processamento de Documentos</p>
+              <p>Aceita apenas JPEG e PDF's.</p>
+              <p>Retorna um arquivo JSON em até 2min. </p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="column2">
+          <div class="card">
+            <img src="https://miro.medium.com/max/600/1*0W3bY_v4cor_SC-rx0rA3A.png" alt="rekognition" style="width:93%">
+            <div class="container">
+              <h2>Rekognition</h2>
+              <p class="title">Reconhecimento Facial</p>
+              <p>Aceita apenas videos em MP4.</p>
+              <p>Retorna um arquivo JSON em até 5min.</p>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <h1 class="p2">Serviços Disponiveis</h1>
+          <p class="p2">Textract: Faz a leitura de documentos e retorna todas as informaçoes em arquivo JSON.</p>
+          <p class="p2">Rekognition: Faz a leitura de videos, retorna as informaçoes desejadas em arquivo JSON.</p>
+          <a href="#enviar" class="button">Enviar arquivos</a>
+        </div>
+      </div>
+    </div>
+  
+  
+    <div class="enviar-image" id="enviar">
+      <div class="enviar-text">
+        <h1 class="p1">Enviar arquivos:</h1>
+        <form action='/imgpdf' enctype="multipart/form-data" method="post" class="center">
+          <div class="p3">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+            <label for="file-upload" class="custom-file-upload">Selecionar arquivos</label> 
+            <input id="file-upload" type="file" name="someExpressFiles" multiple="multiple" />
+          <input type="submit" value="Enviar" class="button3"/>
+        </div>
+        </form>
+      </div>
+    </div>
+  
+
+    
+  
+  </body>
+  <script>
+    function myfunction() {
+      const elementToAnimate = document.getElementsByTagName('div')[2];
+      elementToAnimate.classList.add('animate__animated', 'animate__fadeInLeft');
+    }
+    $('#file-upload').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-upload')[0].files[0].name;
+      $(this).prev('label').text(file);
+    });
+  </script>
