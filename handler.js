@@ -1,7 +1,7 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const app = express();
-const { pegardatastring, dataFormatada, urlFormatado, saveToDynamoDB } = require('./rotas/datamethod')
+const { pegardatastring, dataFormatada, urlFormatado, saveToDynamoDB, sendEnd } = require('./rotas/datamethod')
 const cors = require("cors")
 const AWS = require('aws-sdk');
 const Busboy = require('busboy');
@@ -88,91 +88,24 @@ app.post('/imgpdf', async (req, res, next) => {
       Key: `${id}.json`,
       Expires: 240
     })
+    
+    await new Promise(r => setTimeout(r, 1000))
 
-
-    return res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-        /* Center the loader */
-        #loader {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        z-index: 1;
-        width: 120px;
-        height: 120px;
-        margin: -76px 0 0 -76px;
-        border: 16px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 16px solid #3498db;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-}
-
-      @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
-}
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-        /* Add animation to "page content" */
-        .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 1s
-}
-
-      @-webkit-keyframes animatebottom {
-        from { bottom: -100px; opacity: 0 }
-        to { bottom: 0px; opacity: 1 }
-}
-
-      @keyframes animatebottom {
-        from{ bottom: -100px; opacity: 0 }
-        to{ bottom: 0; opacity: 1 }
-}
-
-        #myDiv {
-        display: none;
-        text-align: center;
-}
-        </style>
-      </head>
-      <body onload="myFunction()" style="margin:0;">
-
-        <div id="loader"></div>
-
-        <div style="display:none;" id="myDiv" class="animate-bottom">
-          <h2><a href='${s3file}'>Download Resultado</a></h2>
-          <h2>Caso o link não funcione, espere 30 segundos e tente novamente.</h2>
-        </div>
-
-        <script>
-          var myVar;
-
-          async function myFunction() {
-            myVar = setTimeout(showPage, 8000)
-          }
-
-          function showPage() {
-            document.getElementById("loader").style.display = "none";
-          document.getElementById("myDiv").style.display = "block";
-}
-        </script>
-
-      </body>
-    </html>
-`)
-
+    var getParams = {
+      Bucket: 'ip2-api-dev',
+      Key: `${id}.json`
+    }
+    // ajeitar para o enviar a resposta mesmo que não ache o objeto, para caso demore mais de 30 segundos que é o timeout maximo da httpAPI na AWS
+    await sendEnd(getParams)
+    res.send(`
+            <!DOCTYPE html>
+            <html>
+                <div style="text-align:center; position:relative;">
+                  <h2><a href='${s3file}'>Download Resultado</a></h2>
+                  <h2>Caso o link não funcione, espere 30 segundos e tente novamente.</h2>
+                </div>
+              </body>
+            </html>`)
   })
 
   req.pipe(busboy);

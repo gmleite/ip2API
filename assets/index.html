@@ -59,9 +59,15 @@
       <form action='/imgpdf' enctype="multipart/form-data" method="post" class="center">
         <div class="p3">
           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-          <label for="file-upload" class="custom-file-upload">Selecionar arquivos</label>
+          <label id="label-upload" for="file-upload" class="custom-file-upload">Selecionar arquivos</label>
           <input id="file-upload" type="file" name="someExpressFiles" multiple="multiple" />
-          <input type="submit" value="Enviar" class="button3" />
+          <div id="formsubmitbutton" class="formsubmitbutton">
+          <input type="submit" value="Enviar" class="button3" onclick="ButtonClicked()"/>
+        </div>
+        <div id="buttonreplacement" class="buttonreplacement" style="margin-left:30px; display:none;">
+          <img src="https://acegif.com/wp-content/uploads/loading-11.gif" alt="loading..." class="resizegif">
+          </div>
+          
         </div>
       </form>
     </div>
@@ -72,6 +78,25 @@
 
 </body>
 <script>
+    function ButtonClicked()
+    {
+       document.getElementById("label-upload").style.display = "none"
+       document.getElementById("formsubmitbutton").style.display = "none"; // to undisplay
+       document.getElementById("buttonreplacement").style.display = ""; // to display
+       return true;
+    }
+    var FirstLoading = true;
+    function RestoreSubmitButton()
+    {
+       if( FirstLoading )
+       {
+          FirstLoading = false;
+          return;
+       }
+       document.getElementById("formsubmitbutton").style.display = ""; // to display
+       document.getElementById("buttonreplacement").style.display = "none"; // to undisplay
+    }
+
   function myfunction() {
     const elementToAnimate = document.getElementsByTagName('div')[2];
     elementToAnimate.classList.add('animate__animated', 'animate__fadeInLeft');
