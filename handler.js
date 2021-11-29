@@ -13,11 +13,11 @@ AWS.config.update({
   region: process.env.region
 })
 const s3 = new AWS.S3();
-var id = pegardatastring()
+
 
 
 app.use(cors())
-
+app.use(express.static("assets"));
 
 
 app.get("/", (req, res, next) => {
@@ -25,7 +25,7 @@ app.get("/", (req, res, next) => {
 
 });
 
-app.use(express.static("assets"));
+
 
 app.post('/imgpdf', async (req, res, next) => {
 
@@ -33,8 +33,8 @@ app.post('/imgpdf', async (req, res, next) => {
 
   let chunks = [], fname, ftype, fEncoding;
   let busboy = new Busboy({ headers: req.headers });
+  var id = pegardatastring()
   busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-
     console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
     fname = filename.replace(/ /g, "_");
     ftype = mimetype;
@@ -47,7 +47,7 @@ app.post('/imgpdf', async (req, res, next) => {
     if (tiposaceitos.indexOf(extension) !== -1) {
       console.log('Tipo de arquivo aceito!')
     } else {
-      res.send(JSON.stringify('Tipo de arquivo nao é aceito '))
+      res.send(JSON.stringify('Tipo de arquivo nao é aceito, os tipos que podem ser usados sao apenas MP4, PDF ou JPEG.'))
       res.end
     }
 
@@ -106,13 +106,15 @@ app.post('/imgpdf', async (req, res, next) => {
                 </div>
               </body>
             </html>`)
+            
   })
-
+  
   req.pipe(busboy);
-  var id = pegardatastring()
+  
 
 
 })
+
 
 
 app.use((req, res, next) => {

@@ -62,8 +62,10 @@ module.exports = {
     })
   },
   async sendEnd(getParams) {
+    var timeout = 0
     var found = false
-    while (found === false) {
+    while (found === false && timeout <= 29) {
+      timeout = timeout + 3
       await new Promise(r => setTimeout(r, 2000))
       s3.headObject(getParams, function (err, metadata) {
         if (err && err.code === 'NotFound') {

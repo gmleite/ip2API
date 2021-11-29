@@ -1,23 +1,23 @@
 <!--
-title: 'Serverless Framework Node Express API on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Node Express API running on AWS Lambda using the traditional Serverless Framework.'
+title: 'Serverless API for using Textract and Aws Rekognition'
+description: 'This API is ready to use and deploy to your AWS account, runs a serverless API for running Textract and Rekognition in a simple way, fast and reliable way.'
 layout: Doc
-framework: v2
+framework: v1
 platform: AWS
 language: nodeJS
 priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
+authorLink: 'https://github.com/fgiouck'
+authorName: 'Giovanni Marcos'
+authorAvatar: ''
 -->
 
 # Serverless Framework Node Express API on AWS
 
-This template demonstrates how to develop and deploy a simple Node Express API service running on AWS Lambda using the traditional Serverless Framework.
+This template demonstrates how to develop and deploy this simple AWS services API running on AWS Lambda using the traditional Serverless Framework.
 
 ## Anatomy of the template
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests thanks to the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, `express` framework is responsible for routing and handling requests internally. Implementation takes advantage of `serverless-http` package, which allows you to wrap existing `express` applications. To learn more about `serverless-http`, please refer to corresponding [GitHub repository](https://github.com/dougmoscrop/serverless-http).
+This template works in a simple way, you configure it with your own AWS keys on a .env file, install all modules and name the buckets, roles and DynamoDB whichever way you want and deploy. It receives a file, if its a PDF or JPEG it runs textract, returns the result JSON after a few seconds, if its MP4, it runs Rekognition Facial Scan and returns the return JSON on up to 14min, depending on file size. File is saved on your S3 and lambda's do the service and save the results. If you run into any bugs or want to help improve this, feel free to contact me in 'https://github.com/fgiouck'
 
 ## Usage
 
@@ -29,6 +29,15 @@ Install dependencies with:
 npm install
 ```
 
+create a .env file with like this:
+
+```
+accessKeyId: "YOUR ACCESS KEY" ,
+secretAccessKey: "YOUR SECRET KEY",
+region: "YOUR REGION"
+```
+
+Also feel free to change bucket names, DynamoDB names or role names on serverless.yml
 and then deploy with:
 
 ```
