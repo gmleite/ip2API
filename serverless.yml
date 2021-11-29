@@ -4,26 +4,37 @@ frameworkVersion: "2"
 provider:
   name: aws
   runtime: nodejs12.x
+  memorySize: 2056
+  timeout: 30
   lambdaHashingVersion: "20201221"
   environment:
-    TIME_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-    FILE_LOCATION_TABLE: "file-location${opt:stage, self:provider.stage}"
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:*
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-      Resource: "*"
-
+    TIME_TABLE: ip2-api-TIME_TABLE
+    FILE_LOCATION_TABLE: "ip2-api-FILE_LOCATION_TABLE"
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - s3:*
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - "dynamodb:*"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - "textract:*"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - "rekognition:*"
+          Resource: "*"
 resources:
   Resources:
     UploadBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ip2-api-dev-test
+        BucketName: ip2-api-dev
         AccessControl: Private
         CorsConfiguration:
           CorsRules:
@@ -51,28 +62,44 @@ resources:
           WriteCapacityUnits: 1
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
-        TableName: ${self:service}-${opt:stage, self:provider.stage}
-
+        TableName: ip2-api-TimeDynamoDbTable
 functions:
   api:
     handler: handler.handler
     events:
       - httpApi: "*"
   textract:
-    handler: ./lambdas/textract.lambda_handler
+    handler: lambdas/textract.lambda_handler
     runtime: python3.7
+    memorySize: 2056
+    timeout: 900
+    layers:
+      - arn:aws:lambda:us-east-1:987107148028:layer:boto3-layer:1
     events:
       - s3:
-        bucket: ip2-api-dev-test
-        event: s3:ObjectCreated:*
-        rules:
-          suffix: .jpeg, .pdf
+            bucket: ip2-api-dev
+            event: s3:ObjectCreated:Put
+            rules:
+              - suffix: .jpeg
+            existing: true
+      - s3:
+            bucket: ip2-api-dev
+            event: s3:ObjectCreated:Put
+            rules:
+              - suffix: .pdf
+            existing: true
+          
   rekognition:
-    handler: ./lambdas/rekognition.lambda_handler
+    handler: lambdas/rekognition.lambda_handler
     runtime: python3.7
+    memorySize: 2057
+    timeout: 900
+    layers:
+      - arn:aws:lambda:us-east-1:987107148028:layer:boto3-layer:1
     events:
-      s3:
-        bucket: ip2-api-dev-test
-        event: s3:ObjectCreated:*
-        rules:
-          suffix: .mp4
+      - s3:
+            bucket: ip2-api-dev
+            event: s3:ObjectCreated:Put
+            rules:
+              - suffix: .mp4
+            existing: true

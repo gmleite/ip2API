@@ -46,7 +46,7 @@ module.exports = {
     AWS.config.setPromisesDependency(require('bluebird'));
 
     var paramsdb = {
-      TableName: "ip2-api-dev",
+      TableName: "ip2-api-TimeDynamoDbTable",
       Item: {
         'data': {
           S: dataFormatad
