@@ -1,50 +1,78 @@
 service: ip2-api
-frameworkVersion: '2'
-
-custom:
-    imageUploadBucket: ip2-api-dev
+frameworkVersion: "2"
 
 provider:
-    name: aws
-    runtime: nodejs12.x
-    lambdaHashingVersion: '20201221'
-    environment:
-        TIME_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-        FILE_LOCATION_TABLE: "file-location${opt:stage, self:provider.stage}"
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-            - s3:*
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-        Resource: "*"
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: "20201221"
+  environment:
+    TIME_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    FILE_LOCATION_TABLE: "file-location${opt:stage, self:provider.stage}"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
 
 resources:
   Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ip2-api-dev-test
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
     TimeDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: "data"
-            AttributeType: "S"   
+          - AttributeName: "data"
+            AttributeType: "S"
         KeySchema:
-          -
-            AttributeName: "data"
+          - AttributeName: "data"
             KeyType: "HASH"
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
-        TableName: ${self:provider.environment.TIME_TABLE}
-    
+        TableName: ${self:service}-${opt:stage, self:provider.stage}
 
 functions:
-    api:
-        handler: handler.handler
-        events:
-        - httpApi: '*'
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: "*"
+  textract:
+    handler: ./lambdas/textract.lambda_handler
+    runtime: python3.7
+    events:
+      - s3:
+        bucket: ip2-api-dev-test
+        event: s3:ObjectCreated:*
+        rules:
+          suffix: .jpeg, .pdf
+  rekognition:
+    handler: ./lambdas/rekognition.lambda_handler
+    runtime: python3.7
+    events:
+      s3:
+        bucket: ip2-api-dev-test
+        event: s3:ObjectCreated:*
+        rules:
+          suffix: .mp4
