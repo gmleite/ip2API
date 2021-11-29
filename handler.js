@@ -95,7 +95,6 @@ app.post('/imgpdf', async (req, res, next) => {
       Bucket: 'ip2-api-dev',
       Key: `${id}.json`
     }
-    // ajeitar para o enviar a resposta mesmo que não ache o objeto, para caso demore mais de 30 segundos que é o timeout maximo da httpAPI na AWS
     await sendEnd(getParams)
     res.send(`
             <!DOCTYPE html>
