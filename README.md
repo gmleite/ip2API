@@ -13,7 +13,7 @@ authorAvatar: ''
 
 # Serverless Framework Node Express API on AWS
 
-This template demonstrates how to develop and deploy this simple AWS services API running on AWS Lambda using the traditional Serverless Framework.
+This template demonstrates how to deploy this simple AWS services API running on AWS Lambda using the traditional Serverless Framework.
 
 ## Anatomy of the template
 
@@ -29,7 +29,7 @@ Install dependencies with:
 npm install
 ```
 
-create a .env file with like this:
+create a .env file like this:
 
 ```
 accessKeyId: "YOUR ACCESS KEY" ,
