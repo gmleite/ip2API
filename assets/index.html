@@ -56,8 +56,9 @@
   <div class="enviar-image" id="enviar">
     <div class="enviar-text">
       <h1 class="p1">Enviar arquivos:</h1>
-      <form action='/imgpdf' enctype="multipart/form-data" method="post" class="center">
+      <form action='/upload' enctype="multipart/form-data" method="post" class="center">
         <div class="p3">
+          <input id="user-upload" type="text" name="user_id">
           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
           <label id="label-upload" for="file-upload" class="custom-file-upload">Selecionar arquivos</label>
           <input id="file-upload" type="file" name="someExpressFiles" multiple="multiple" />
@@ -67,7 +68,6 @@
         <div id="buttonreplacement" class="buttonreplacement" style="margin-left:30px; display:none;">
           <img src="https://acegif.com/wp-content/uploads/loading-11.gif" alt="loading..." class="resizegif">
           </div>
-          
         </div>
       </form>
     </div>

@@ -10,6 +10,7 @@ provider:
   environment:
     TIME_TABLE: ip2-api-TIME_TABLE
     FILE_LOCATION_TABLE: "ip2-api-FILE_LOCATION_TABLE"
+    ID_TABLE: ip2-api-ID_TABLE
   iam:
     role:
       statements:

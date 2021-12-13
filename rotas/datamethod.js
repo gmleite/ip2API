@@ -40,7 +40,7 @@ module.exports = {
   urlFormatado(id, extension) {
     return location = `https://s3.console.aws.amazon.com/s3/object/ip2-api-dev?region=us-east-1&prefix=${id}.${extension}`
   },
-  saveToDynamoDB(dataFormatad, urlFormatad) {
+  saveToDynamoDB(dataFormatad, urlFormatad, identificaçao) {
     const dynamodb = new AWS.DynamoDB();
 
     AWS.config.setPromisesDependency(require('bluebird'));
@@ -53,6 +53,9 @@ module.exports = {
         },
         'localizaçao': {
           S: urlFormatad
+        },
+        'identificaçao':{
+          S:identificaçao
         }
       }
     }

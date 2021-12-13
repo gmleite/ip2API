@@ -14,8 +14,6 @@ AWS.config.update({
 })
 const s3 = new AWS.S3();
 
-
-
 app.use(cors())
 app.use(express.static("assets"));
 
@@ -27,13 +25,14 @@ app.get("/", (req, res, next) => {
 
 
 
-app.post('/imgpdf', async (req, res, next) => {
+app.post('/upload', async (req, res, next) => {
 
   // MELHOR NAO CUTUCAR
 
   let chunks = [], fname, ftype, fEncoding;
   let busboy = new Busboy({ headers: req.headers });
   var id = pegardatastring()
+  var userid 
   busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
     console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
     fname = filename.replace(/ /g, "_");
@@ -61,6 +60,10 @@ app.post('/imgpdf', async (req, res, next) => {
       console.log('File [' + filename + '] Finished');
     });
   });
+  busboy.on('field', function(fieldname, val) {
+    userid = val
+    console.log('User id:' + val + 'sent!')
+  });
   busboy.on('finish', async function () {
     const paramss3 = {
       Bucket: 'ip2-api-dev',
@@ -76,10 +79,11 @@ app.post('/imgpdf', async (req, res, next) => {
         return;
       }
     })
+    var identificaçao = userid
     var dataFormatad = dataFormatada()
     var urlFormatad = urlFormatado(id, extension)
 
-    saveToDynamoDB(dataFormatad, urlFormatad)
+    saveToDynamoDB(dataFormatad, urlFormatad, identificaçao)
 
     await new Promise(r => setTimeout(r, 2000))
 
@@ -99,6 +103,7 @@ app.post('/imgpdf', async (req, res, next) => {
     res.send(`
             <!DOCTYPE html>
             <html>
+            <head> <link rel="stylesheet" href="main.css" /> </head>
                 <div style="text-align:center; position:relative;">
                   <h2><a href='${s3file}'>Download Resultado</a></h2>
                   <h2>Caso o link não funcione, espere 30 segundos e tente novamente.</h2>
