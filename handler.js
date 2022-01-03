@@ -62,7 +62,7 @@ app.post('/upload', async (req, res, next) => {
   });
   busboy.on('field', function(fieldname, val) {
     userid = val
-    console.log('User id:' + val + 'sent!')
+    console.log('User id: ' + val + ' sent!')
   });
   busboy.on('finish', async function () {
     const paramss3 = {
